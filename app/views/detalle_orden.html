@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de la Orden</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+        * {
+            font-family: "Inter", serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .modal {
+            margin: 2rem auto;
+            padding: 2.5rem;
+            z-index: 1;
+            position: relative;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            max-width: 1000px;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .card {
+            padding: 24px;
+            background-color: white;
+            border: 1px solid #D9D9D9;
+            border-radius: 8px;
+            box-shadow: 2px 7px 11px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .order-date {
+            font-size: 14px;
+            font-weight: 500;
+            color: #8E8E8E;
+        }
+
+        .modal-header {
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .order h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .order-status {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .order-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .grid-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .success-pill,
+        .warning-pill,
+        .info-pill {
+            color: black;
+            padding: 8px 16px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .success-pill {
+            background-color: #C0FFBF;
+        }
+
+        .warning-pill {
+            background-color: #FFF5BF;
+        }
+
+        .info-pill {
+            background-color: #bfdeff;
+        }
+
+        .icon {
+            display: block;
+            height: 20px;
+            width: 20px;
+        }
+
+        .card-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+        }
+
+        .card-body>.card-item:not(:last-child) {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .detail b {
+            font-weight: 600;
+        }
+
+        .information-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .information-item p {
+            color: #6b7280;
+            text-align: right;
+            margin: 0;
+        }
+
+        .information-item b {
+            font-weight: 600;
+        }
+
+        #loading-message {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="order-details-container">
+        <div id="loading-message">Esperando detalles de la orden...</div>
+    </div>
+
+    <script>
+        window.addEventListener('message', (event) => {
+            const orden = event.data;
+            if (!orden || !orden.id) {
+                document.getElementById('loading-message').textContent = 'No se pudo cargar la información de la orden.';
+                return;
+            }
+
+            const loadingMessage = document.getElementById('loading-message');
+            if (loadingMessage) loadingMessage.style.display = 'none';
+
+            const container = document.getElementById('order-details-container');
+            container.innerHTML = '';
+
+            // --- Build UI ---
+
+            let estadoPillHTML = '';
+            const checkIcon = `<svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5858 13.4142L7.75735 10.5858L6.34314 12L10.5858 16.2426L17.6568 9.17157L16.2426 7.75735L10.5858 13.4142Z" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" fill="currentColor"></path></svg>`;
+            const clockIcon = `<svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 7V12H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2"></path></svg>`;
+            const shippingIcon = `<svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 8H17.45A2.99 2.99 0 0 0 14.52 5H9.48A2.99 2.99 0 0 0 6.55 8H4L3 14H6V17C6 17.55 6.45 18 7 18H8C8.55 18 9 17.55 9 17V14H15V17C15 17.55 15.45 18 16 18H17C17.55 18 18 17.55 18 17V14H21L20 8Z" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7.5" cy="20.5" r="1.5" stroke="currentColor" stroke-width="2"/><circle cx="16.5" cy="20.5" r="1.5" stroke="currentColor" stroke-width="2"/></svg>`;
+
+            if (orden.estado === 'Entregado') {
+                estadoPillHTML = `<div class="success-pill"><span>${checkIcon}</span>Pagado</div>`;
+            } else if (orden.estado === 'Procesando') {
+                estadoPillHTML = `<div class="warning-pill"><span>${clockIcon}</span>En Preparación</div>`;
+            } else if (orden.estado === 'Enviado') {
+                estadoPillHTML = `<div class="info-pill"><span>${shippingIcon}</span>Enviado</div>`;
+            }
+
+            const itemsHTML = orden.items.map(item =>
+                `<div class="card-item"><span>${item.nombre} (x${item.cantidad})</span> <span>${(item.precio * item.cantidad).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</span></div>`
+            ).join('');
+
+            const totalItems = orden.items.reduce((acc, item) => acc + item.cantidad, 0);
+            const totalFormateado = orden.total.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+
+            const modalHTML = `
+                <div class="modal">
+                    <div class="modal-title">Detalle de Orden</div>
+                    <div class="modal-header">
+                        <div class="order">
+                            <h1>Orden #${orden.id}</h1>
+                            <p class="order-date">${new Date(orden.fecha).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        </div>
+                        <div class="order-status">${estadoPillHTML}</div>
+                    </div>
+                    <div class="order-grid">
+                        <div class="grid-left">
+                            <div class="card">
+                                <div class="card-title">Detalle Items</div>
+                                <div class="card-body">${itemsHTML}</div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">Detalle de Pago</div>
+                                <div class="card-body">
+                                    <div class="card-item detail"><b>Subtotal</b><span>${totalItems} Item(s)</span></div>
+                                    <div class="card-item detail"><b>Tax</b><span>$0.00</span></div>
+                                    <div class="card-item detail"><b>Total</b><span style="font-weight: 700;">${totalFormateado}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-right">
+                            <div class="card">
+                                <div class="contact-information">
+                                    <b style="padding-bottom: 8px; display: block;">INFORMACIÓN CONTACTO</b>
+                                    <div class="information-item">
+                                        <b>Nombre</b>
+                                        <p>${orden.cliente}</p>
+                                    </div>
+                                    <div class="information-item">
+                                        <b>Email</b>
+                                        <p>${orden.contactDetails.email}</p>
+                                    </div>
+                                    <div class="information-item">
+                                        <b>Teléfono</b>
+                                        <p>${orden.contactDetails.telefono}</p>
+                                    </div>
+                                    <div class="information-item">
+                                        <b>Número documento</b>
+                                        <p>${orden.contactDetails.documento}</p>
+                                    </div>
+                                    <b style="padding-bottom: 8px; display: block; margin-top: 24px;">DATOS DE ENVÍO</b>
+                                    <div class="information-item">
+                                        <b>Ciudad</b>
+                                        <p>${orden.shippingDetails.ciudad}</p>
+                                    </div>
+                                    <div class="information-item">
+                                        <b>Calle</b>
+                                        <p>${orden.shippingDetails.calle}</p>
+                                    </div>
+                                    <div class="information-item">
+                                        <b>Código Postal</b>
+                                        <p>${orden.shippingDetails.codigoPostal}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = modalHTML;
+        });
+    </script>
+</body>
+
+</html>

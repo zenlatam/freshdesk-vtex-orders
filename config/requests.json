@@ -1,0 +1,38 @@
+{
+    "getOrders": {
+        "schema": {
+            "method": "GET",
+            "host": "<%=iparam.base_url %>",
+            "path": "/api/oms/pvt/orders?q=<%= context.rut %>&per_page=6&orderBy=creationDate,desc",
+            "headers": {
+                "Content-Type": "application/json",
+                "X-VTEX-API-AppKey": "<%=iparam.app_key %>",
+                "X-VTEX-API-AppToken": "<%=iparam.app_token %>"
+            }
+        }
+    },
+    "getOrderDetails": {
+        "schema": {
+            "method": "GET",
+            "host": "<%=iparam.base_url %>",
+            "path": "/api/oms/pvt/orders/<%= context.orderId %>",
+            "headers": {
+                "Content-Type": "application/json",
+                "X-VTEX-API-AppKey": "<%=iparam.app_key %>",
+                "X-VTEX-API-AppToken": "<%=iparam.app_token %>"
+            }
+        }
+    },
+    "cancelOrder": {
+        "schema": {
+            "method": "POST",
+            "host": "<%= iparam.base_url %>",
+            "path": "/api/oms/pvt/orders/<%= context.orderId %>/cancel",
+            "headers": {
+                "Content-Type": "application/json",
+                "X-VTEX-API-AppKey": "<%= iparam.app_key %>",
+                "X-VTEX-API-AppToken": "<%= iparam.app_token %>"
+            }
+        }
+    }
+}

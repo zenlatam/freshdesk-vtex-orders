@@ -1,0 +1,21 @@
+{
+    "base_url": {
+        "display_name": "Base URL",
+        "description": "La URL base para la API Ejemplo: https://tiendaurl.vtexcommercestable.com.br",
+        "type": "text",
+        "required": true
+    },
+    "app_key": {
+        "display_name": "App Key",
+        "description": "App Key de VTEX",
+        "type": "text",
+        "required": true
+    },
+    "app_token": {
+        "display_name": "App Token",
+        "description": "App Token de VTEX",
+        "type": "text",
+        "required": true,
+        "secure": true
+    }
+}

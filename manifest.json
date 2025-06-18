@@ -1,0 +1,22 @@
+{
+  "platform-version": "2.3",
+  "product": {
+    "freshdesk": {
+      "location": {
+        "contact_sidebar": {
+          "url": "index.html",
+          "icon": "styles/images/icon.svg"
+        }
+      },
+      "requests":{
+        "getOrders":{},
+        "getOrderDetails":{},
+        "cancelOrder":{}
+      }
+    }
+  },
+  "engines": {
+    "node": "18.20.5",
+    "fdk": "9.4.2"
+  }
+}
