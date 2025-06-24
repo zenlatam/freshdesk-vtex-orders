@@ -29,6 +29,17 @@ Este proyecto es una aplicación personalizada para Freshdesk que permite visual
     └── modal.html            Vista del modal principal
 ```
 
+## Configuración Inicial (iparams)
+Para que la app funcione correctamente, debes configurar los siguientes parámetros en la instalación:
+
+| Parámetro   | Descripción                                                                 | Ejemplo                                               | Obligatorio |
+|-------------|-----------------------------------------------------------------------------|-------------------------------------------------------|-------------|
+| base_url    | La URL base de la tienda VTEX.                                             | https://tiendaurl.vtexcommercestable.com.br           | Sí          |
+| app_key     | App Key de VTEX para autenticación API.                                    | vtex-app-key-123456                                   | Sí          |
+| app_token   | App Token de VTEX para autenticación API (se recomienda mantenerlo seguro).| vtex-app-token-abcdef                                 | Sí          |
+
+Estos parámetros se solicitan al instalar la app en Freshdesk y se utilizan para autenticar y realizar las consultas a la API de VTEX.
+
 ## Instalación y Uso
 1. Clona este repositorio en tu máquina local.
 2. Instala el [Freshworks CLI (FDK)](https://developers.freshworks.com/docs/cli/quick-start/).
@@ -47,4 +58,4 @@ Este proyecto es una aplicación personalizada para Freshdesk que permite visual
 ---
 
 © 2025 CocaCola / Zen. Proyecto de integración VTEX-FDesk.
-"# freshdesk-vtex-orders" 
+"# freshdesk-vtex-orders"
